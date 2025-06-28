@@ -1,0 +1,17 @@
+{
+  "_id": "665f5b1e8f1a2f001c7a0001",
+  "name": "Starter Pack",
+  "purchaseProductId": "663b5b5d9f1a2f001c7a1234",
+  "requirements": [
+    {
+      "requirement": "minLevel",
+      "operator": ">=",
+      "value": 10
+    },
+    {
+      "requirement": "daysSinceRegistration",
+      "operator": "<=",
+      "value": 30
+    }
+  ]
+}

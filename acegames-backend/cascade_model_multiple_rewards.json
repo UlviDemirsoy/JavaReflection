@@ -1,0 +1,54 @@
+{
+  "_id": "665f5c2a8f1a2f001c7a0003",
+  "name": "Summer Event Cascade",
+  "skinId": 2,
+  "startDate": 1717507200,
+  "endDate": 1718457600,
+  "stepRule": [
+    {
+      "tileId": 101,
+      "weight": 10
+    },
+    {
+      "tileId": 102,
+      "weight": 20
+    }
+  ],
+  "stepInfo": [
+    {
+      "group": "Group A",
+      "steps": [
+        {
+          "step": 1,
+          "requiredStep": 0,
+          "rewards": [
+            {
+              "tradeType": "CURRENCY",
+              "eventType": "LOGIN",
+              "value": 100,
+              "remainingSeconds": 0
+            },
+            {
+              "tradeType": "BADGE",
+              "eventType": "LEVEL_UP",
+              "value": 1,
+              "remainingSeconds": 0
+            }
+          ]
+        },
+        {
+          "step": 2,
+          "requiredStep": 1,
+          "rewards": [
+            {
+              "tradeType": "ITEM",
+              "eventType": "MISSION_COMPLETE",
+              "value": 1,
+              "remainingSeconds": 3600
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
