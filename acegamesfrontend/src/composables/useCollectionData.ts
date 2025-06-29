@@ -2,7 +2,7 @@ import { ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import api from '../lib/api'
 
-export function useCollectionData(collection: Ref<string | null>) {
+export function useCollectionData(collection: Ref<string | null>, refreshTrigger?: Ref<number | undefined>) {
   const schema = ref<any>(null)
   const items = ref<any[]>([])
   const loading = ref(false)
@@ -30,6 +30,15 @@ export function useCollectionData(collection: Ref<string | null>) {
   }
 
   watch(collection, fetchData, { immediate: true })
+  
+  // Watch for refresh trigger changes
+  if (refreshTrigger) {
+    watch(refreshTrigger, (newValue) => {
+      if (newValue !== undefined) {
+        fetchData()
+      }
+    })
+  }
 
   return { schema, items, loading, error }
 }

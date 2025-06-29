@@ -4,18 +4,23 @@
     mode="out-in"
     appear
   >
-    <div v-if="collection" :key="collection" class="relative">
-      <div class="flex justify-end mb-4">
-        <button class="btn-primary" @click="openCreateModal">+ Ekle</button>
+    <div v-if="collection" :key="collection" class="relative bg-gray-50 min-h-screen py-8">
+      <div class="flex flex-col items-center mb-6">
+        <h1 class="text-3xl font-extrabold tracking-tight text-blue-700 mb-4">Generic Crud App</h1>
+      </div>
+      <div class="flex justify-end mb-4 max-w-5xl mx-auto">
+        <button class="btn-primary" @click="openCreateModal">+ Add</button>
       </div>
       <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-white/60 z-20">
         <span class="inline-block w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></span>
       </div>
-      <CollectionTable 
-        :collection="collection" 
-        :key="refreshKey" 
-        @edit="handleEdit"
-      />
+      <div class="overflow-x-auto max-w-5xl mx-auto rounded-xl shadow-lg bg-white">
+        <CollectionTable 
+          :collection="collection" 
+          :refresh-key="refreshKey"
+          @edit="handleEdit"
+        />
+      </div>
       <DynamicFormModal
         :open="showModal"
         :collection="collection"
@@ -26,8 +31,9 @@
         @updated="handleUpdated"
       />
     </div>
-    <div v-else key="empty">
-      <p class="text-gray-500">Bir koleksiyon seçin.</p>
+    <div v-else key="empty" class="bg-gray-50 min-h-screen flex flex-col items-center justify-center">
+      <h1 class="text-3xl font-extrabold tracking-tight text-blue-700 mb-4">Generic Crud App</h1>
+      <p class="text-gray-500">Choose a collection...</p>
     </div>
   </Transition>
 </template>
@@ -35,7 +41,7 @@
 <script setup lang="ts">
 import CollectionTable from '../components/ui/CollectionTable.vue'
 import DynamicFormModal from '../components/ui/DynamicFormModal.vue'
-import { defineProps, ref, computed } from 'vue'
+import { defineProps, ref, computed, onMounted } from 'vue'
 import { useCollectionData } from '../composables/useCollectionData'
 
 const props = defineProps<{ collection: string | null }>()
@@ -75,6 +81,10 @@ function handleUpdated() {
   // Refresh the table by changing key
   refreshKey.value++
 }
+
+onMounted(() => {
+  document.title = 'Generic Crud App'
+})
 </script>
 
 <style scoped>

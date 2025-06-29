@@ -18,7 +18,15 @@ public class ReflectionSchemaParser {
             Class<?> fieldType = field.getType();
             FieldDefinition def = new FieldDefinition();
 
-            if (fieldType.isEnum()) {
+            // Tarihsel Long/long alanlar için özel kontrol
+            String fieldName = field.getName().toLowerCase();
+            if ((fieldType.equals(Long.class) || fieldType.equals(long.class)) &&
+                (fieldName.contains("date") || fieldName.contains("time") ||
+                 fieldName.contains("created") || fieldName.contains("updated") ||
+                 fieldName.contains("expire"))) {
+                def.setType("Date");
+            }
+            else if (fieldType.isEnum()) {
                 def.setType("Enum");
                 def.setEnumName(fieldType.getSimpleName());
             } else if (List.class.isAssignableFrom(fieldType)) {
