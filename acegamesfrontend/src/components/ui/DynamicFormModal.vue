@@ -1,98 +1,39 @@
 <template>
-  <div v-if="open" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-    <div class="bg-white rounded-xl shadow-xl p-8 w-full max-w-lg relative max-h-[90vh] overflow-y-auto">
-      <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl" @click="$emit('close')">&times;</button>
-      <h2 class="text-2xl font-bold mb-6">
-        {{ isEditMode ? (schema?.displayName || collection) + ' Düzenle' : 'Yeni ' + (schema?.displayName || collection) + ' Ekle' }}
-      </h2>
-      <form @submit.prevent="handleSubmit" class="space-y-4">
+  <div v-if="open" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-2xl p-10 w-full max-w-3xl relative max-h-[90vh] overflow-y-auto border border-gray-200">
+      <button class="absolute top-6 right-6 text-gray-400 hover:text-gray-700 text-3xl font-bold focus:outline-none focus:ring-2 focus:ring-blue-500" @click="$emit('close')">&times;</button>
+      <div class="mb-8 pb-2 border-b border-gray-100 flex items-center justify-center">
+        <h2 class="text-3xl font-extrabold text-center tracking-tight">{{ isEditMode ? (schema?.displayName || collection) + ' Edit' : 'Add New ' + (schema?.displayName || collection) }}</h2>
+      </div>
+      <form @submit.prevent="handleSubmit" class="space-y-6">
         <template v-for="(field, key) in schema?.fields" :key="key">
-          <div v-if="String(key) !== '_id'">
-            <label class="block font-semibold mb-1">{{ key }}</label>
-            <!-- Reference field support -->
-            <select
-              v-if="field.reference && referenceOptions[field.reference]"
+          <div v-if="String(key) !== '_id'" class="space-y-2">
+            <Label class="block font-semibold text-base">{{ key }}</Label>
+            <DynamicFormField
+              :field="field"
               v-model="form[key]"
-              class="w-full border rounded px-3 py-2"
-            >
-              <option disabled value="">Seçiniz</option>
-              <option v-for="item in referenceOptions[field.reference]" :key="item._id" :value="item._id">
-                {{ item.name || item._id }}
-              </option>
-            </select>
-            <input
-              v-else-if="field.type === 'String'"
-              v-model="form[key]"
-              type="text"
-              class="w-full border rounded px-3 py-2"
+              :enumOptions="enumOptions"
+              :referenceOptions="referenceOptions"
             />
-            <input
-              v-else-if="field.type === 'Number'"
-              v-model.number="form[key]"
-              type="number"
-              class="w-full border rounded px-3 py-2"
-            />
-            <input
-              v-else-if="field.type === 'Boolean'"
-              v-model="form[key]"
-              type="checkbox"
-              class="mr-2"
-            />
-            <select
-              v-else-if="field.type === 'Enum'"
-              v-model="form[key]"
-              class="w-full border rounded px-3 py-2"
-            >
-              <option disabled value="">Seçiniz</option>
-              <option v-for="option in enumOptions[field.enumName] || []" :key="option" :value="option">
-                {{ option }}
-              </option>
-            </select>
-            <!-- Array of Object support -->
-            <div v-else-if="field.type === 'Array' && field.items && field.items.type === 'Object'">
-              <div v-for="(item, idx) in form[key]" :key="idx" class="mb-2 p-2 border rounded">
-                <div v-for="(subField, subKey) in field.items.fields" :key="subKey">
-                  <label class="block text-xs">{{ subKey }}</label>
-                  <input
-                    v-if="subField.type === 'String'"
-                    v-model="form[key][idx][subKey]"
-                    type="text"
-                    class="w-full border rounded px-2 py-1 mb-1"
-                  />
-                  <input
-                    v-else-if="subField.type === 'Number'"
-                    v-model.number="form[key][idx][subKey]"
-                    type="number"
-                    class="w-full border rounded px-2 py-1 mb-1"
-                  />
-                  <input
-                    v-else-if="subField.type === 'Boolean'"
-                    v-model="form[key][idx][subKey]"
-                    type="checkbox"
-                    class="mr-2"
-                  />
-                  <select
-                    v-else-if="subField.type === 'Enum'"
-                    v-model="form[key][idx][subKey]"
-                    class="w-full border rounded px-2 py-1 mb-1"
-                  >
-                    <option disabled value="">Seçiniz</option>
-                    <option v-for="option in enumOptions[subField.enumName] || []" :key="option" :value="option">
-                      {{ option }}
-                    </option>
-                  </select>
-                  <div v-else class="text-gray-400 italic text-xs">({{ subField.type }})</div>
-                </div>
-                <button type="button" class="btn-secondary mt-1" @click="form[key].splice(idx, 1)">Sil</button>
-              </div>
-              <button type="button" class="btn-primary mt-2" @click="form[key].push({})">+ Ekle</button>
-            </div>
-            <div v-else class="text-gray-400 italic text-sm">Bu alan için input eklenmedi ({{ field.type }})</div>
           </div>
         </template>
-        <button type="submit" class="btn-primary w-full mt-4">
-          {{ isEditMode ? 'Güncelle' : 'Ekle' }}
-        </button>
+        <div class="flex gap-4 pt-6">
+          <Button 
+            type="button" 
+            variant="outline" 
+            class="flex-1 text-lg font-semibold py-3" 
+            @click="$emit('close')"
+          >
+            Cancel
+          </Button>
+          <Button 
+            type="submit" 
+            variant="default" 
+            class="flex-1 text-lg font-semibold py-3 text-black bg-blue-500 hover:bg-blue-600"
+          >
+            {{ isEditMode ? 'Update' : 'Save' }}
+          </Button>
+        </div>
       </form>
     </div>
   </div>
@@ -101,6 +42,9 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import api from '../../lib/api'
+import Button from '../../components/ui/button/Button.vue'
+import Label from '../../components/ui/label/Label.vue'
+import DynamicFormField from './DynamicFormField.vue'
 
 const props = defineProps<{ 
   open: boolean, 
@@ -119,70 +63,163 @@ async function fetchSchema() {
   if (!props.collection) return
   const res = await api.get(`/schema/${props.collection}`)
   schema.value = res.data
-  // Formu sıfırla ve enum/arraylar için uygun başlangıç değeri ata
+  
+  // Initialize form with appropriate default values
   form.value = {}
   for (const key in res.data.fields) {
     if (key !== '_id') {
-      if (res.data.fields[key].type === 'Enum') {
-        form.value[key] = ''
-      } else if (res.data.fields[key].type === 'Array') {
+      const field = res.data.fields[key]
+      if (field.type === 'Array') {
         form.value[key] = []
-      } else if (res.data.fields[key].reference) {
-        form.value[key] = ''
-        fetchReferenceOptions(res.data.fields[key].reference)
+      } else if (field.type === 'Object') {
+        form.value[key] = {}
+      } else if (field.type === 'Boolean') {
+        form.value[key] = false
       } else {
         form.value[key] = ''
       }
     }
   }
-  // Eğer edit modundaysa, formu mevcut değerlerle doldur
+  
+  // Fetch reference options for all reference fields
+  await fetchReferenceOptions(res.data.fields)
+  
+  // If in edit mode, populate form with existing values
   if (props.isEditMode && props.editItem) {
-    for (const key in form.value) {
-      if (props.editItem[key] !== undefined) {
-        form.value[key] = JSON.parse(JSON.stringify(props.editItem[key]))
+    for (const key in schema.value.fields) {
+      if (key !== '_id' && props.editItem[key] !== undefined) {
+        const field = schema.value.fields[key]
+        
+        // Handle date conversion for edit mode
+        if (field.type === 'Date' && typeof props.editItem[key] === 'number') {
+          const date = new Date(props.editItem[key])
+          form.value[key] = date.toISOString().slice(0, 10)
+        } else if (field.reference && props.editItem[key]) {
+          // Handle reference fields - extract _id from object or use direct value
+          if (typeof props.editItem[key] === 'object' && props.editItem[key]._id) {
+            form.value[key] = props.editItem[key]._id
+          } else {
+            form.value[key] = props.editItem[key]
+          }
+        } else {
+          form.value[key] = JSON.parse(JSON.stringify(props.editItem[key]))
+        }
       }
     }
   }
 }
 
-async function fetchReferenceOptions(reference: string) {
-  if (referenceOptions.value[reference]) return // önceden yüklendiyse tekrar çekme
-  const res = await api.get(`/content/${reference.toLowerCase()}`)
-  referenceOptions.value[reference] = res.data
+async function fetchReferenceOptions(fields: any) {
+  const references = new Set<string>()
+  
+  // Collect all reference fields
+  for (const key in fields) {
+    const field = fields[key]
+    if (field.reference) {
+      references.add(field.reference)
+    } else if (field.type === 'Object' && field.fields) {
+      // Recursively check nested objects
+      await fetchReferenceOptions(field.fields)
+    } else if (field.type === 'Array' && field.items) {
+      // Check array items
+      if (field.items.reference) {
+        references.add(field.items.reference)
+      } else if (field.items.type === 'Object' && field.items.fields) {
+        await fetchReferenceOptions(field.items.fields)
+      }
+    }
+  }
+  
+  // Fetch data for each reference
+  for (const reference of references) {
+    if (!referenceOptions.value[reference]) {
+      try {
+        const res = await api.get(`/content/${reference.toLowerCase()}`)
+        referenceOptions.value = { ...referenceOptions.value, [reference]: res.data }
+      } catch (error) {
+        console.error(`Failed to fetch reference ${reference}:`, error)
+        referenceOptions.value = { ...referenceOptions.value, [reference]: [] }
+      }
+    }
+  }
 }
 
 async function fetchEnums() {
-  const res = await api.get('/schema/enums')
-  enumOptions.value = res.data
-  console.log('Enum options:', enumOptions.value)
+  try {
+    const res = await api.get('/schema/enums')
+    enumOptions.value = res.data
+  } catch (error) {
+    console.error('Failed to fetch enums:', error)
+    enumOptions.value = {}
+  }
+}
+
+// Convert dates to timestamps before submitting
+function convertDatesToTimestamps(obj: any, schemaFields: any): any {
+  const result = { ...obj }
+  
+  for (const key in schemaFields) {
+    if (key === '_id') continue
+    
+    const field = schemaFields[key]
+    const value = result[key]
+    
+    if (field.type === 'Date' && typeof value === 'string' && value) {
+      result[key] = new Date(value).getTime()
+    } else if (field.type === 'Object' && value && field.fields) {
+      result[key] = convertDatesToTimestamps(value, field.fields)
+    } else if (field.type === 'Array' && Array.isArray(value) && field.items) {
+      result[key] = value.map(item => {
+        if (field.items.type === 'Object' && field.items.fields) {
+          return convertDatesToTimestamps(item, field.items.fields)
+        } else if (field.items.type === 'Date' && typeof item === 'string' && item) {
+          return new Date(item).getTime()
+        }
+        return item
+      })
+    }
+  }
+  
+  return result
+}
+
+async function handleSubmit() {
+  if (!props.collection || !schema.value) return
+  
+  try {
+    const dataToSubmit = convertDatesToTimestamps(form.value, schema.value.fields)
+    
+    if (props.isEditMode && props.editItem && props.editItem._id) {
+      // Update
+      await api.put(`/content/${props.collection}/${props.editItem._id}`, dataToSubmit)
+      emit('updated')
+    } else {
+      // Create
+      await api.post(`/content/${props.collection}`, dataToSubmit)
+      emit('created')
+    }
+    
+    emit('close')
+  } catch (error) {
+    console.error('Submit error:', error)
+    // You might want to show an error message to the user here
+  }
 }
 
 watch(() => props.collection, () => {
   if (props.open) fetchSchema()
 })
+
 watch(() => props.open, (val) => {
   if (val) {
     fetchSchema()
     fetchEnums()
   }
 })
+
 watch(() => props.editItem, () => {
   if (props.open && props.isEditMode) {
     fetchSchema()
   }
 })
-
-async function handleSubmit() {
-  if (!props.collection) return
-  if (props.isEditMode && props.editItem && props.editItem._id) {
-    // Update
-    await api.put(`/content/${props.collection}/${props.editItem._id}`, form.value)
-    emit('updated')
-  } else {
-    // Create
-    await api.post(`/content/${props.collection}`, form.value)
-    emit('created')
-  }
-  emit('close')
-}
 </script> 
