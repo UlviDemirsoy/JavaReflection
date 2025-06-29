@@ -5,7 +5,4 @@ Dockerfile
 .dockerignore
 build/
 .gradle/
-gradle/
-gradlew
-gradlew.bat
 *.md 
