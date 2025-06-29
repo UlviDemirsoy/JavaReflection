@@ -41,7 +41,7 @@ public class SchemaRegistrationConfig {
             List<String> classesToRegisterList;
             if (classesToRegister == null || classesToRegister.trim().isEmpty()) {
                 // Register schemas for all available classes if none specified
-                classesToRegisterList = Arrays.asList("Skin", "PurchaseProduct", "Offer", "Cascade");
+                classesToRegisterList = Arrays.asList("Skin", "PurchaseProduct", "Offer", "Cascade", "Tile");
                 logger.info("No specific classes specified, will register schemas for all available classes: {}", classesToRegisterList);
             } else {
                 // Parse the comma-separated list of classes

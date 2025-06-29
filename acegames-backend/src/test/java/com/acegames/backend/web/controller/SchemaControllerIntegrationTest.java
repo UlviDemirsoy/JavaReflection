@@ -59,16 +59,16 @@ class SchemaControllerIntegrationTest {
     }
 
     @Test
-    void shouldCreateSchemaWithGenerateEndpoint() throws Exception {
-        mockMvc.perform(post("/api/schema/generate")
+    void shouldCreateSchemaWithRegisterEndpoint() throws Exception {
+        mockMvc.perform(post("/api/schema/register")
                 .param("className", "Skin"))
             .andExpect(status().isCreated());
         // Optionally, check that the schema was created in the DB
     }
 
     @Test
-    void shouldReturnErrorForInvalidClassNameOnGenerate() throws Exception {
-        mockMvc.perform(post("/api/schema/generate")
+    void shouldReturnErrorForInvalidClassNameOnRegister() throws Exception {
+        mockMvc.perform(post("/api/schema/register")
                 .param("className", "NonExistentClass"))
             .andExpect(status().isBadRequest());
     }
