@@ -1,7 +1,6 @@
 package com.acegames.backend.web.controller;
 
 import com.acegames.backend.application.dto.ModelSchemaDto;
-import com.acegames.backend.application.dto.ModelSchemaRegisterRequest;
 import com.acegames.backend.application.dto.FieldDefinition;
 import com.acegames.backend.application.helper.EnumScanner;
 import com.acegames.backend.application.helper.ReflectionSchemaParser;
@@ -37,23 +36,7 @@ public class SchemaController {
         this.logger = logger;
     }
 
-    @Operation(summary = "Register a new schema")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Schema successfully registered"),
-            @ApiResponse(responseCode = "400", description = "Invalid schema request",
-                    content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
-    })
-    @PostMapping("/register")
-    public ResponseEntity<Void> registerSchema(
-            @RequestBody @Valid ModelSchemaRegisterRequest request
-    ) {
-        logger.logRecordBuilder()
-                .setBody("Registering new schema for: " + request.getCollection())
-                .emit();
 
-        schemaService.register(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
 
     @Operation(summary = "Get schema by collection name")
     @ApiResponses({

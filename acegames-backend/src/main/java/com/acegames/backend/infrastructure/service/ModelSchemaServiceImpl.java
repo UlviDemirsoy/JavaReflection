@@ -1,7 +1,6 @@
 package com.acegames.backend.infrastructure.service;
 
 import com.acegames.backend.application.dto.FieldDefinition;
-import com.acegames.backend.application.dto.ModelSchemaRegisterRequest;
 import com.acegames.backend.application.helper.ReflectionSchemaParser;
 import com.acegames.backend.application.service.ModelSchemaService;
 import com.acegames.backend.application.dto.ModelSchemaDto;
@@ -28,23 +27,6 @@ public class ModelSchemaServiceImpl implements ModelSchemaService {
     public ModelSchemaServiceImpl(ModelSchemaRepository repository) {
         this.repository = repository;
     }
-
-    @Override
-    public void register(ModelSchemaRegisterRequest request) {
-        // Duplicate kontrolü
-        Optional<ModelSchemaDocument> existing = repository.findByCollection(request.getCollection());
-        if (existing.isPresent()) {
-            throw new DuplicateSchemaException(request.getCollection());
-        }
-
-        ModelSchemaDocument document = ModelSchemaDocument.builder()
-                .collection(request.getCollection())
-                .displayName(request.getDisplayName())
-                .fields(request.getFields())
-                .build();
-        repository.save(document);
-    }
-
 
     @Override
     public Optional<ModelSchemaDto> getSchema(String collection) {
