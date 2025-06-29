@@ -48,19 +48,14 @@ public class SchemaController {
     @GetMapping("/{collection}")
     public ResponseEntity<ModelSchemaDto> getSchema(@PathVariable String collection) {
         logger.logRecordBuilder()
-                .setBody("Fetching schema for collection")
-                .setAttribute("collection", collection)
-                .setAttribute("operation", "get_schema")
+                .setBody("Fetching schema for collection: " + collection)
                 .emit();
 
         return schemaService.getSchema(collection)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> {
                     logger.logRecordBuilder()
-                            .setBody("Schema not found for collection")
-                            .setAttribute("collection", collection)
-                            .setAttribute("operation", "get_schema")
-                            .setAttribute("status", "not_found")
+                            .setBody("Schema not found for collection: " + collection)
                             .emit();
                     return ResponseEntity.notFound().build();
                 });
@@ -73,13 +68,10 @@ public class SchemaController {
     public ResponseEntity<List<ModelSchemaDto>> getAllSchemas() {
         logger.logRecordBuilder()
                 .setBody("Fetching all registered schemas")
-                .setAttribute("operation", "get_all_schemas")
                 .emit();
 
         return ResponseEntity.ok(schemaService.getAllSchemas());
     }
-
-
 
     @PostMapping("/register")
     @Operation(summary = "Register schema from class name")
