@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/schema")
@@ -96,6 +97,38 @@ public class SchemaController {
     public ResponseEntity<Void> registerSchemaFromClass(@RequestParam String className) {
         schemaService.generateFromClassName(className);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/generate/bulk")
+    @Operation(summary = "Register schemas for multiple classes")
+    public ResponseEntity<Map<String, Object>> registerSchemasFromClasses(@RequestBody List<String> classNames) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        List<String> successList = new ArrayList<>();
+        List<String> errorList = new ArrayList<>();
+        
+        for (String className : classNames) {
+            try {
+                schemaService.generateFromClassName(className);
+                successList.add(className);
+            } catch (Exception e) {
+                errorList.add(className + ": " + e.getMessage());
+            }
+        }
+        
+        result.put("totalClasses", classNames.size());
+        result.put("successful", successList);
+        result.put("errors", errorList);
+        result.put("message", String.format("Processed %d classes: %d successful, %d errors", 
+            classNames.size(), successList.size(), errorList.size()));
+        
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/generate/default")
+    @Operation(summary = "Register schemas for default classes (Skin, PurchaseProduct, Offer, Cascade)")
+    public ResponseEntity<Map<String, Object>> registerDefaultSchemas() {
+        List<String> defaultClasses = List.of("Skin", "PurchaseProduct", "Offer", "Cascade");
+        return registerSchemasFromClasses(defaultClasses);
     }
 
 

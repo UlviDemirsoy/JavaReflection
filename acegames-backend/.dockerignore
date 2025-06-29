@@ -1,0 +1,11 @@
+.git
+.gitignore
+README.md
+Dockerfile
+.dockerignore
+build/
+.gradle/
+gradle/
+gradlew
+gradlew.bat
+*.md 
