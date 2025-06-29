@@ -8,18 +8,19 @@
       <div class="flex flex-col items-center mb-6">
         <h1 class="text-3xl font-extrabold tracking-tight text-blue-700 mb-4">Generic Crud App</h1>
       </div>
-      <div class="flex justify-end mb-4 max-w-5xl mx-auto">
-        <button class="btn-primary" @click="openCreateModal">+ Add</button>
-      </div>
-      <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-white/60 z-20">
-        <span class="inline-block w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></span>
-      </div>
-      <div class="overflow-x-auto max-w-5xl mx-auto rounded-xl shadow-lg bg-white">
+      <div class="max-w-5xl mx-auto rounded-2xl shadow-xl bg-white p-6">
         <CollectionTable 
           :collection="collection" 
           :refresh-key="refreshKey"
           @edit="handleEdit"
-        />
+        >
+          <template #add-button>
+            <button class="btn-primary ml-4" @click="openCreateModal">+ Add</button>
+          </template>
+        </CollectionTable>
+      </div>
+      <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-white/60 z-20">
+        <span class="inline-block w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></span>
       </div>
       <DynamicFormModal
         :open="showModal"
