@@ -15,7 +15,7 @@
       />
       <slot name="add-button"></slot>
     </div>
-    <div class="max-w-5xl mx-auto rounded-2xl shadow-xl bg-gradient-to-br from-white to-blue-50 p-6">
+    <div class="max-w-5xl mx-auto rounded-2xl shadow-xl bg-white p-6">
       <div class="overflow-x-auto">
         <Table class="min-w-[900px] w-full">
           <TableHeader>
@@ -27,9 +27,9 @@
             </TableRow>
           </TableHeader>
           <TableBody>
-            <template v-if="filteredItems.length">
+            <template v-if="paginatedItems.length">
               <TableRow
-                v-for="(item, idx) in filteredItems"
+                v-for="(item, idx) in paginatedItems"
                 :key="item._id"
                 :class="[
                   idx % 2 === 0 ? 'bg-gray-50' : 'bg-white',
@@ -69,6 +69,38 @@
           </TableBody>
         </Table>
       </div>
+      <!-- Pagination Controls -->
+      <div class="flex flex-row items-center justify-between mt-6">
+        <div class="flex items-center gap-2">
+          <button
+            class="px-3 py-1 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-blue-50 disabled:opacity-50"
+            :disabled="currentPage === 1"
+            @click="currentPage--"
+          >
+            Previous
+          </button>
+          <span class="mx-2 text-base">Page {{ currentPage }} of {{ totalPages }}</span>
+          <button
+            class="px-3 py-1 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-blue-50 disabled:opacity-50"
+            :disabled="currentPage === totalPages || totalPages === 0"
+            @click="currentPage++"
+          >
+            Next
+          </button>
+        </div>
+        <div class="flex items-center gap-2">
+          <label for="pageSize" class="text-base text-gray-600">Rows per page:</label>
+          <select
+            id="pageSize"
+            v-model.number="pageSize"
+            class="border border-gray-300 rounded-md px-2 py-1 text-base focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
+            <option :value="10">10</option>
+            <option :value="20">20</option>
+            <option :value="50">50</option>
+          </select>
+        </div>
+      </div>
     </div>
     <div v-if="loading" class="text-xs text-gray-500 mt-2">Loading...</div>
     <div v-if="error" class="text-xs text-red-500 mt-2">{{ error }}</div>
@@ -76,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, toRef, ref } from 'vue'
+import { computed, toRef, ref, watch } from 'vue'
 import { useCollectionData } from '../../composables/useCollectionData'
 import Button from '../../components/ui/button/Button.vue'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../../components/ui/table'
@@ -94,6 +126,9 @@ const fieldKeys = computed(() => schema.value ? Object.keys(schema.value.fields)
 
 const filterText = ref('')
 
+const pageSize = ref(10)
+const currentPage = ref(1)
+
 const filteredItems = computed(() => {
   if (!filterText.value) return items.value
   const lower = filterText.value.toLowerCase()
@@ -103,6 +138,17 @@ const filteredItems = computed(() => {
       return typeof val === 'string' && val.toLowerCase().includes(lower)
     })
   )
+})
+
+const totalPages = computed(() => Math.ceil(filteredItems.value.length / pageSize.value) || 1)
+
+const paginatedItems = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value
+  return filteredItems.value.slice(start, start + pageSize.value)
+})
+
+watch([pageSize, filteredItems], () => {
+  currentPage.value = 1
 })
 
 console.log('schema.value:', schema.value)
