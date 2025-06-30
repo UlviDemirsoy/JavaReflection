@@ -73,13 +73,13 @@ function closeModal() {
 
 function handleCreated() {
   closeModal()
-  // Refresh the table by changing key
+  // trigger render
   refreshKey.value++
 }
 
 function handleUpdated() {
   closeModal()
-  // Refresh the table by changing key
+   // trigger render
   refreshKey.value++
 }
 

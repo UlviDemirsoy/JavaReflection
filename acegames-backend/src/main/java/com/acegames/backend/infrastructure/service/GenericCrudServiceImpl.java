@@ -65,7 +65,6 @@ public class GenericCrudServiceImpl implements GenericCrudService {
 
         ObjectId objectId = new ObjectId(id);
 
-        // _id alanını güncellemeden çıkar
         data.remove("_id");
 
         Query query = new Query(Criteria.where("_id").is(objectId));

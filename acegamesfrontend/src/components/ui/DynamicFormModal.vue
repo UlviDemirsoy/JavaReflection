@@ -64,7 +64,6 @@ async function fetchSchema() {
   const res = await api.get(`/schema/${props.collection}`)
   schema.value = res.data
   
-  // Initialize form with appropriate default values
   form.value = {}
   for (const key in res.data.fields) {
     if (key !== '_id') {
@@ -81,21 +80,17 @@ async function fetchSchema() {
     }
   }
   
-  // Fetch reference options for all reference fields
   await fetchReferenceOptions(res.data.fields)
   
-  // If in edit mode, populate form with existing values
   if (props.isEditMode && props.editItem) {
     for (const key in schema.value.fields) {
       if (key !== '_id' && props.editItem[key] !== undefined) {
         const field = schema.value.fields[key]
         
-        // Handle date conversion for edit mode
         if (field.type === 'Date' && typeof props.editItem[key] === 'number') {
           const date = new Date(props.editItem[key])
           form.value[key] = date.toISOString().slice(0, 10)
         } else if (field.reference && props.editItem[key]) {
-          // Handle reference fields - extract _id from object or use direct value
           if (typeof props.editItem[key] === 'object' && props.editItem[key]._id) {
             form.value[key] = props.editItem[key]._id
           } else {
@@ -112,16 +107,13 @@ async function fetchSchema() {
 async function fetchReferenceOptions(fields: any) {
   const references = new Set<string>()
   
-  // Collect all reference fields
   for (const key in fields) {
     const field = fields[key]
     if (field.reference) {
       references.add(field.reference)
     } else if (field.type === 'Object' && field.fields) {
-      // Recursively check nested objects
-      await fetchReferenceOptions(field.fields)
+        await fetchReferenceOptions(field.fields)
     } else if (field.type === 'Array' && field.items) {
-      // Check array items
       if (field.items.reference) {
         references.add(field.items.reference)
       } else if (field.items.type === 'Object' && field.items.fields) {
@@ -130,7 +122,6 @@ async function fetchReferenceOptions(fields: any) {
     }
   }
   
-  // Fetch data for each reference
   for (const reference of references) {
     if (!referenceOptions.value[reference]) {
       try {
@@ -154,7 +145,6 @@ async function fetchEnums() {
   }
 }
 
-// Convert dates to timestamps before submitting
 function convertDatesToTimestamps(obj: any, schemaFields: any): any {
   const result = { ...obj }
   
@@ -202,7 +192,6 @@ async function handleSubmit() {
     emit('close')
   } catch (error) {
     console.error('Submit error:', error)
-    // You might want to show an error message to the user here
   }
 }
 
