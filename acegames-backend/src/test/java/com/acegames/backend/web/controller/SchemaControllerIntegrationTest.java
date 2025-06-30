@@ -63,7 +63,6 @@ class SchemaControllerIntegrationTest {
         mockMvc.perform(post("/api/schema/register")
                 .param("className", "Skin"))
             .andExpect(status().isCreated());
-        // Optionally, check that the schema was created in the DB
     }
 
     @Test
@@ -77,7 +76,6 @@ class SchemaControllerIntegrationTest {
     void shouldDeleteSchemaByCollectionName() throws Exception {
         mockMvc.perform(delete("/api/schema/testcollection"))
             .andExpect(status().isNoContent());
-        // Confirm it's gone
         mockMvc.perform(get("/api/schema/testcollection"))
             .andExpect(status().isNotFound());
     }

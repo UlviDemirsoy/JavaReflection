@@ -121,7 +121,7 @@ public class SchemaController {
     })
     public ResponseEntity<Void> deleteSchema(@PathVariable String collection) {
         schemaService.deleteByCollectionName(collection);
-        return ResponseEntity.noContent().build(); // 204 No Content
+        return ResponseEntity.noContent().build(); 
     }
 
 
@@ -139,7 +139,7 @@ public class SchemaController {
             Class<?> clazz = Class.forName("com.acegames.backend.domain.model." + className);
             Map<String, Object> result = new LinkedHashMap<>();
             
-            // Reflection parser'ı test et
+           
             Map<String, FieldDefinition> fields = ReflectionSchemaParser.parseClass(clazz);
             result.put("className", className);
             result.put("fields", fields);

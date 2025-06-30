@@ -56,7 +56,7 @@ public class GenericCrudController {
             @org.springframework.web.bind.annotation.RequestBody Map<String, Object> data
     ) {
         Document doc = crudService.insert(collection, data);
-        return ResponseEntity.status(201).body(doc); // Daha doğru status
+        return ResponseEntity.status(201).body(doc);
     }
 
     @Operation(summary = "Update an existing document by ID")

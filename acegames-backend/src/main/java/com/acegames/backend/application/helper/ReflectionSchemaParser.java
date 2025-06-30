@@ -18,7 +18,6 @@ public class ReflectionSchemaParser {
             Class<?> fieldType = field.getType();
             FieldDefinition def = new FieldDefinition();
 
-            // Tarihsel Long/long alanlar için özel kontrol
             String fieldName = field.getName().toLowerCase();
             if ((fieldType.equals(Long.class) || fieldType.equals(long.class)) &&
                 (fieldName.contains("date") || fieldName.contains("time") ||
@@ -32,7 +31,6 @@ public class ReflectionSchemaParser {
             } else if (List.class.isAssignableFrom(fieldType)) {
                 def.setType("Array");
 
-                // Generic türü çözümle
                 Type genericType = field.getGenericType();
                 if (genericType instanceof ParameterizedType pt) {
                     Type actualType = pt.getActualTypeArguments()[0];
@@ -48,7 +46,6 @@ public class ReflectionSchemaParser {
                 def.setFields(parseClass(fieldType));
             }
 
-            // 💡 Referans kontrolü
             String reference = extractReferenceName(field.getName());
             if (reference != null) {
                 def.setReference(reference);

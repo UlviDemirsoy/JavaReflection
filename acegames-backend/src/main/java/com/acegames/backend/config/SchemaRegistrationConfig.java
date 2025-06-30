@@ -24,7 +24,7 @@ public class SchemaRegistrationConfig {
     private String classesToRegister;
     
     @Bean
-    @Profile("!test") // Don't run in test profile
+    @Profile("!test")
     public CommandLineRunner schemaRegistrationRunner(ModelSchemaService modelSchemaService) {
         return args -> {
             logger.info("Schema registration runner initialized");

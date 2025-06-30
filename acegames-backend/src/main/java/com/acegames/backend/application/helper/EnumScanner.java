@@ -10,7 +10,6 @@ public class EnumScanner {
     public static Map<String, String[]> scanEnums() {
         Map<String, String[]> result = new HashMap<>();
 
-        // Sabit olarak enum sınıfları listeleniyor, gerekirse Reflections lib ile dinamik tarama yapılabilir
         Class<?>[] enumClasses = new Class[]{
                 com.acegames.backend.domain.enums.Requirement.class,
                 com.acegames.backend.domain.enums.TradeType.class,
