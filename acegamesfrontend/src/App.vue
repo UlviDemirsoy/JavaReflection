@@ -20,10 +20,10 @@ onMounted(() => {
         <img src="/acegames-logo.png" alt="Ace Games Logo" class="w-40 h-auto animate-bounce" />
       </div>
     </transition>
-    <aside class="fixed top-0 left-0 h-screen w-64 bg-gray-100 shadow-md z-10">
+    <aside class="fixed top-0 left-0 h-screen w-56 bg-gray-100 shadow-md z-10">
       <Sidebar :selected="selectedCollection" @select="selectedCollection = $event" />
     </aside>
-    <main class="ml-64 p-8 min-h-screen">
+    <main class="ml-56 min-h-screen">
       <CollectionView :collection="selectedCollection" />
     </main>
   </div>
