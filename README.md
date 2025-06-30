@@ -1,4 +1,4 @@
-# Ace Games Backend & Frontend
+# Backend & Frontend
 
 A Java Spring Boot backend with Vue.js frontend using MongoDB, Docker, and Docker Compose.
 
