@@ -127,7 +127,6 @@ JavaReflection/
 
 ### Unit Tests
 - Backend services tested with Mockito and JUnit 5
-- Frontend components tested with Vue Test Utils
 - Follow AAA pattern (Arrange-Act-Assert)
 
 ### Integration Tests
