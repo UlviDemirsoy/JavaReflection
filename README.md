@@ -39,8 +39,6 @@ A Java Spring Boot backend with Vue.js frontend using MongoDB, Docker, and Docke
 
 ### Schema Generation
 - POST /api/schema/register?className={className} - Register schema for a specific class
-- POST /api/schema/register/default - Register schemas for default classes (Skin, PurchaseProduct, Offer, Cascade, Tile)
-- POST /api/schema/register/bulk - Register schemas for multiple classes
 
 ### Additional Endpoints
 - GET /api/schema/enums - List all available enums and their values
