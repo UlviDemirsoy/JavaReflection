@@ -29,7 +29,6 @@ A Java Spring Boot backend with Vue.js frontend using MongoDB, Docker, and Docke
 
 ### MongoDB (Port 27017)
 - Database for storing schemas and data
-- Initialized with custom scripts
 
 ## Main API Endpoints
 
