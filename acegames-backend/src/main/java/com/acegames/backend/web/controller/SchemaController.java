@@ -80,39 +80,6 @@ public class SchemaController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/register/bulk")
-    @Operation(summary = "Register schemas for multiple classes")
-    public ResponseEntity<Map<String, Object>> registerSchemasFromClasses(@RequestBody List<String> classNames) {
-        Map<String, Object> result = new LinkedHashMap<>();
-        List<String> successList = new ArrayList<>();
-        List<String> errorList = new ArrayList<>();
-        
-        for (String className : classNames) {
-            try {
-                schemaService.generateFromClassName(className);
-                successList.add(className);
-            } catch (Exception e) {
-                errorList.add(className + ": " + e.getMessage());
-            }
-        }
-        
-        result.put("totalClasses", classNames.size());
-        result.put("successful", successList);
-        result.put("errors", errorList);
-        result.put("message", String.format("Processed %d classes: %d successful, %d errors", 
-            classNames.size(), successList.size(), errorList.size()));
-        
-        return ResponseEntity.ok(result);
-    }
-
-    @PostMapping("/register/default")
-    @Operation(summary = "Register schemas for default classes (Skin, PurchaseProduct, Offer, Cascade)")
-    public ResponseEntity<Map<String, Object>> registerDefaultSchemas() {
-        List<String> defaultClasses = List.of("Skin", "PurchaseProduct", "Offer", "Cascade");
-        return registerSchemasFromClasses(defaultClasses);
-    }
-
-
     @DeleteMapping("/{collection}")
     @Operation(summary = "Delete schema by collection name")
     @ApiResponses({
