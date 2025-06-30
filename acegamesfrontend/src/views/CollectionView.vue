@@ -8,7 +8,7 @@
       <div class="flex flex-col items-center mb-6">
         <h1 class="text-3xl font-extrabold tracking-tight text-blue-700 mb-4">Generic Crud App</h1>
       </div>
-      <div class="max-w-5xl mx-auto rounded-2xl shadow-xl bg-white p-6">
+      <div class="w-full min-w-[768px] px-4 sm:px-6 lg:px-8 py-6 rounded-2xl shadow-xl bg-white">
         <CollectionTable 
           :collection="collection" 
           :refresh-key="refreshKey"
@@ -25,7 +25,7 @@
       <DynamicFormModal
         :open="showModal"
         :collection="collection"
-        :edit-item="editItem"
+        :edit-item="editItem"     
         :is-edit-mode="isEditMode"
         @close="closeModal"
         @created="handleCreated"
