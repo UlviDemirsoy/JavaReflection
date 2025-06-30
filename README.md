@@ -134,7 +134,7 @@ JavaReflection/
 
 ## Default Schema Classes
 
-The application automatically registers schemas for these classes:
+The application automatically registers schemas for these classes with reflection schema seeding:
 - Skin
 - PurchaseProduct  
 - Offer
